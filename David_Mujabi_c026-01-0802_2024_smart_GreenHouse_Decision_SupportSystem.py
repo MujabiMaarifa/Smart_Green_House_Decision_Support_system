@@ -20,14 +20,14 @@ def simulate_sensor_decision():
         current_humidity = random.uniform(40, 75) # in percent
         current_soil_moisture = random.uniform(35, 50) # in percent
         current_temperature = random.uniform(25, 35) #degrees
-        current_light_intensity = random.uniform(0, 1000)#in lux
+        current_light_intensity = random.uniform(0, 1500)#in lux
 
         #display our current values of the received inputs
         print("-- Sensor Readings received")
         print(f"Humidity: {current_humidity:.2f} %")
         print(f"Temperature: {current_temperature:.2f} (degrees celcius)")
         print(f"Light intensity: {current_light_intensity:.2f} lux")
-        print(f"Soil moisture: {current_soil_moisture:.2f} %")
+        print(f"Soil moisture: {current_soil_moisture:.2f} %\n")
         # watering control
         if(current_soil_moisture < 30 and (current_humidity < 40 or current_temperature > 30)):
             irrigation_status = "ON"
@@ -61,7 +61,8 @@ def simulate_sensor_decision():
 
         print("-- Message and Action to take")
         print(f"The irrigation status: {irrigation_status}")
-        print(f"The Light shading status: {shading_status}")
+        print(f"The Light shading status: {shading_status}\n")
+        print(f"------------------- END OF {time_interval} HOUR --------------------\n")
 
         time.sleep(0.5)
 if __name__ == "__main__":
