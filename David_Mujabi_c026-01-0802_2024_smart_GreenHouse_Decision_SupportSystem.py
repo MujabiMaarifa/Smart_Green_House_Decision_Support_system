@@ -9,7 +9,7 @@ def simulate_sensor_decision():
     #the initial system status
     irrigation_status = "OFF"
     shading_status = "OFF"
-    print("\\n-- System watering and shading states")
+    print("\n-- System watering and shading states")
     print(f"The irrigation status is: {irrigation_status}")
     print(f"The light shading status is: {shading_status}\n")
 
@@ -18,16 +18,18 @@ def simulate_sensor_decision():
         print(f"The time is: {time_interval} hour\n")
 
         current_humidity = random.uniform(40, 75) # in percent
-        current_soil_moisture = random.uniform(35, 50) # in percent
-        current_temperature = random.uniform(25, 35) #degrees
+        current_soil_moisture = random.uniform(20, 80) # in percent
+        current_temperature = random.uniform(28, 40) #degrees
         current_light_intensity = random.uniform(0, 1500)#in lux
+        current_co2_level = random.uniform(1000, 1500) #in ppm
 
         #display our current values of the received inputs
         print("-- Sensor Readings received")
         print(f"Humidity: {current_humidity:.2f} %")
         print(f"Temperature: {current_temperature:.2f} (degrees celcius)")
         print(f"Light intensity: {current_light_intensity:.2f} lux")
-        print(f"Soil moisture: {current_soil_moisture:.2f} %\n")
+        print(f"Soil moisture: {current_soil_moisture:.2f} %")
+        print(f"CO2 level: {current_co2_level:.2f} ppm\n")
         # watering control
         if(current_soil_moisture < 30 and (current_humidity < 40 or current_temperature > 30)):
             irrigation_status = "ON"
@@ -62,8 +64,44 @@ def simulate_sensor_decision():
         print("-- Message and Action to take")
         print(f"The irrigation status: {irrigation_status}")
         print(f"The Light shading status: {shading_status}\n")
-        print(f"------------------- END OF {time_interval} HOUR --------------------\n")
 
+
+        #raise alerts from the output of the sensor
+        alerts = []
+        alert_count = 0
+
+        if current_temperature > 30:
+            alert_count+=1;
+            alerts.append("Temperature > 30");
+        if current_humidity < 25 :
+            alert_count +=1
+            alerts.append("Humidity < 25%")
+        if current_co2_level > 1200:
+            alert_count+=1
+            alerts.append("C02 level > 1200 ppm")
+        if current_soil_moisture < 30:
+            alert_count +=1
+            alerts.append("Soil Moisture < 30%")
+        if alert_count >=3:
+            print(f"The system is in critical condition!!!\nAmong the conditions met in the system is:\n")
+            for alert in alerts:
+                print(f"-- {alert}")
+            return True
+        else:
+            print("The system is not in critical condition based on the conditions for a critical system...")
+        print(f"------------------- END OF {time_interval} HOUR --------------------\n") 
         time.sleep(0.5)
+
+
+"""
+#raise alerts logic
+alert_count = 0
+alerts=[]
+***state the conditions required
+while incrementing the alert counting
+check if the conditions appended to the alert counts are met and are >= 3
+raise an alert and print the conditions
+"""
+
 if __name__ == "__main__":
     simulate_sensor_decision()
