@@ -1,6 +1,54 @@
 import random
 import time
+from datetime import datetime, timedelta
 
+# lists to store historical data for the mock AI dashboard
+soil_moisture_history = []
+action_log = []
+
+#trend identification
+def get_moving_average(data_list, window_size):
+    if len(data_list) < window_size:
+        return None # Not enough data for the moving average
+    
+    # average of the last window
+    return sum(data_list[-window_size:]) / window_size
+
+""" Connect the system to a mock AI dashboard that logs actions and recommends future 
+watering intervals based on trends (simulate using moving average of soil moisture).
+"""
+
+def mock_ai_dashboard_recommendation(current_hour, soil_moisture_history, action_log):
+
+    print("\n--- Mock AI Dashboard Insights ---")
+
+    # Logged Actions for the current hour
+    print(f"Logged Actions for Hour {current_hour}:")
+    if action_log:
+        #  latest action logged
+        latest_action = action_log[-1]
+        print(f"  - Irrigation: {latest_action['irrigation']}")
+        print(f"  - Shading: {latest_action['shading']}")
+    else:
+        print("  - No actions logged yet.")
+
+    # Watering Recommendation based on Soil Moisture Trend
+    window_size = 1
+    avg_soil_moisture = get_moving_average(soil_moisture_history, window_size)
+
+    print("\nWatering Recommendation (based on 1-hour soil moisture trend):")
+    if avg_soil_moisture is None:
+        print("  - Not enough historical data for a trend analysis. Continue monitoring.")
+    else:
+        print(f"  - Last {window_size}-hour average soil moisture: {avg_soil_moisture:.2f}%")
+        if avg_soil_moisture < 35:
+            print("  - Recommendation: Soil moisture consistently LOW. Consider INCREASING watering frequency or duration.")
+        elif 35 <= avg_soil_moisture <= 60:
+            print("  - Recommendation: Soil moisture within OPTIMAL range. Maintain current watering schedule.")
+        else: # avg_soil_moisture > 60
+            print("  - Recommendation: Soil moisture consistently HIGH. Consider REDUCING watering frequency or duration, or check drainage.")
+
+#main function
 """The simulation sensor receiving the random inputs on the time intervals """
 def simulate_sensor_decision():
     print("\n--- Welcome to The Green House Desion and Support System ---\n")
@@ -86,12 +134,24 @@ def simulate_sensor_decision():
             print(f"The system is in critical condition!!!\nAmong the conditions met in the system is:\n")
             for alert in alerts:
                 print(f"-- {alert}")
-            return True
+            # return True
         else:
             print("The system is not in critical condition based on the conditions for a critical system...")
+
+        #log the system output to a mock dashboard
+        soil_moisture_history.append(current_soil_moisture)
+        action_log.append({
+            'hour': time_interval,
+            'irrigation': 'ON' if irrigation_status else 'OFF',
+            'shading': f"{shading_status}% Open",
+        })
         print(f"------------------- END OF {time_interval} HOUR --------------------\n") 
         time.sleep(0.5)
 
+    # AI dashboard
+    print("\n--- End of Simulation Summary from Mock AI Dashboard ---")
+    mock_ai_dashboard_recommendation(time_interval, soil_moisture_history, action_log)
+    print("=== Lets Make Good Farming Techniques with advanced ai using Smart Green House Support System ===\n")
 
 """
 #raise alerts logic
